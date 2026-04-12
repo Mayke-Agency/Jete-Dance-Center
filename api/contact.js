@@ -45,7 +45,7 @@ export default async function handler(req, res) {
 
   try {
     await resend.emails.send({
-      from: "Jeté Dance Center <onboarding@resend.dev>",
+      from: "Jeté Dance Center <hello@jetedancetx.com>",
       to: ["jetedancetx@gmail.com"], // ← change if needed
       subject: "New Contact Form Submission",
       reply_to: email,
