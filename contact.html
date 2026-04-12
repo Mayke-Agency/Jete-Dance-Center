@@ -144,7 +144,19 @@
           <div class="contact-form-wrap">
             <h2>Contact Us</h2>
 
-            <form class="contact-form" id="contact-form" novalidate>
+            <form
+              class="contact-form"
+              id="contact-form"
+              action="https://formspree.io/f/mrerzkbz"
+              method="POST"
+              novalidate
+            >
+              <input
+                type="hidden"
+                name="_subject"
+                value="New Contact Form Submission"
+              />
+
               <div class="form-row">
                 <label for="first-name">First name*</label>
                 <input type="text" id="first-name" name="firstName" required />
@@ -169,16 +181,6 @@
                   required
                 ></textarea>
               </div>
-
-              <input
-                type="text"
-                name="websiteUrl"
-                class="hp-field"
-                tabindex="-1"
-                autocomplete="off"
-              />
-
-              <input type="hidden" id="form-started" name="formStarted" />
 
               <button
                 class="button button-primary contact-submit"

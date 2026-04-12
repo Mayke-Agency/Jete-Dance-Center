@@ -74,7 +74,6 @@ function setupHeroCarousel() {
 function setupContactForm() {
   const form = document.querySelector("#contact-form");
   const status = document.querySelector("#form-status");
-  const startedField = document.querySelector("#form-started");
 
   if (!form || !status) return;
 
@@ -83,7 +82,6 @@ function setupContactForm() {
     "input[required], textarea[required]",
   );
 
-  resetFormTimer(startedField);
   checkFormValidity();
 
   requiredFields.forEach((field) => {
@@ -96,24 +94,22 @@ function setupContactForm() {
     status.textContent = "";
     status.classList.remove("is-error", "is-success");
 
-    const payload = Object.fromEntries(new FormData(form).entries());
+    const firstName = form.querySelector('[name="firstName"]')?.value.trim();
+    const lastName = form.querySelector('[name="lastName"]')?.value.trim();
+    const email = form.querySelector('[name="email"]')?.value.trim();
+    const message = form.querySelector('[name="message"]')?.value.trim();
 
-    if (
-      !payload.firstName ||
-      !payload.lastName ||
-      !payload.email ||
-      !payload.message
-    ) {
+    if (!firstName || !lastName || !email || !message) {
       showFormStatus(status, "Please fill out all required fields.", "error");
       return;
     }
 
-    if (!isValidEmail(payload.email)) {
+    if (!isValidEmail(email)) {
       showFormStatus(status, "Please enter a valid email address.", "error");
       return;
     }
 
-    if (payload.message.trim().length < 10) {
+    if (message.length < 10) {
       showFormStatus(
         status,
         "Please write a slightly longer message.",
@@ -124,29 +120,39 @@ function setupContactForm() {
 
     status.textContent = "Sending...";
 
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.classList.remove("enabled");
+    }
+
     try {
-      const response = await fetch("/api/contact", {
+      const formData = new FormData(form);
+
+      const response = await fetch(form.action, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          Accept: "application/json",
         },
-        body: JSON.stringify(payload),
+        body: formData,
       });
 
       let result = {};
 
       try {
         result = await response.json();
-      } catch (jsonError) {
+      } catch (error) {
         result = {};
       }
 
       if (!response.ok) {
-        throw new Error(result.error || "Something went wrong.");
+        throw new Error(
+          result.errors?.[0]?.message ||
+            result.error ||
+            "Something went wrong.",
+        );
       }
 
       form.reset();
-      resetFormTimer(startedField);
       checkFormValidity();
       showFormStatus(status, "Thanks! Your message has been sent.", "success");
     } catch (error) {
@@ -155,6 +161,7 @@ function setupContactForm() {
         error.message || "Sorry, there was a problem sending your message.",
         "error",
       );
+      checkFormValidity();
     }
   });
 
@@ -177,11 +184,6 @@ function setupContactForm() {
       submitBtn.classList.remove("enabled");
     }
   }
-}
-
-function resetFormTimer(startedField) {
-  if (!startedField) return;
-  startedField.value = String(Date.now());
 }
 
 function showFormStatus(statusElement, message, type) {
