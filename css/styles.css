@@ -343,20 +343,22 @@ ul {
   color: #ffffff;
 }
 
-.button-primary {
+.contact-submit {
   background: #e6c5c9;
   color: #fff;
-  transition: all 0.3s ease;
   opacity: 0.6;
+  transition:
+    background-color 0.3s ease,
+    opacity 0.3s ease;
 }
 
-.button-primary.enabled {
-  background: #c78f96; /* darker pink */
+.contact-submit.enabled {
+  background: #c78f96;
   opacity: 1;
   cursor: pointer;
 }
 
-.button-primary:disabled {
+.contact-submit:disabled {
   cursor: not-allowed;
 }
 

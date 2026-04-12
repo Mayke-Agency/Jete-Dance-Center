@@ -78,7 +78,17 @@ function setupContactForm() {
 
   if (!form || !status) return;
 
+  const submitBtn = form.querySelector(".contact-submit");
+  const requiredFields = form.querySelectorAll(
+    "input[required], textarea[required]",
+  );
+
   resetFormTimer(startedField);
+  checkFormValidity();
+
+  requiredFields.forEach((field) => {
+    field.addEventListener("input", checkFormValidity);
+  });
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -123,7 +133,13 @@ function setupContactForm() {
         body: JSON.stringify(payload),
       });
 
-      const result = await response.json();
+      let result = {};
+
+      try {
+        result = await response.json();
+      } catch (jsonError) {
+        result = {};
+      }
 
       if (!response.ok) {
         throw new Error(result.error || "Something went wrong.");
@@ -131,6 +147,7 @@ function setupContactForm() {
 
       form.reset();
       resetFormTimer(startedField);
+      checkFormValidity();
       showFormStatus(status, "Thanks! Your message has been sent.", "success");
     } catch (error) {
       showFormStatus(
@@ -140,6 +157,26 @@ function setupContactForm() {
       );
     }
   });
+
+  function checkFormValidity() {
+    if (!submitBtn) return;
+
+    let allFilled = true;
+
+    requiredFields.forEach((field) => {
+      if (!field.value.trim()) {
+        allFilled = false;
+      }
+    });
+
+    if (allFilled) {
+      submitBtn.disabled = false;
+      submitBtn.classList.add("enabled");
+    } else {
+      submitBtn.disabled = true;
+      submitBtn.classList.remove("enabled");
+    }
+  }
 }
 
 function resetFormTimer(startedField) {
@@ -163,32 +200,3 @@ function showFormStatus(statusElement, message, type) {
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
-
-const form = document.querySelector(".contact-form");
-const submitBtn = form.querySelector("button");
-
-const requiredFields = form.querySelectorAll(
-  "input[required], textarea[required]",
-);
-
-function checkFormValidity() {
-  let allFilled = true;
-
-  requiredFields.forEach((field) => {
-    if (!field.value.trim()) {
-      allFilled = false;
-    }
-  });
-
-  if (allFilled) {
-    submitBtn.disabled = false;
-    submitBtn.classList.add("enabled");
-  } else {
-    submitBtn.disabled = true;
-    submitBtn.classList.remove("enabled");
-  }
-}
-
-requiredFields.forEach((field) => {
-  field.addEventListener("input", checkFormValidity);
-});
