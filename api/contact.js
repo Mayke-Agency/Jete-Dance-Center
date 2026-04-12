@@ -10,16 +10,19 @@ export default async function handler(req, res) {
   const { firstName, lastName, email, message, websiteUrl, formStarted } =
     req.body || {};
 
+  // Honeypot check
   if (websiteUrl) {
     return res.status(400).json({ error: "Spam detected." });
   }
 
+  // Required fields
   if (!firstName || !lastName || !email || !message) {
     return res
       .status(400)
       .json({ error: "Please fill out all required fields." });
   }
 
+  // Email validation
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailPattern.test(email)) {
     return res
@@ -27,10 +30,12 @@ export default async function handler(req, res) {
       .json({ error: "Please enter a valid email address." });
   }
 
+  // Message validation
   if (message.trim().length < 10 || message.length > 5000) {
     return res.status(400).json({ error: "Please enter a valid message." });
   }
 
+  // Timing check
   const started = Number(formStarted);
   const now = Date.now();
 
@@ -39,9 +44,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    const data = await resend.emails.send({
-      from: "Jeté Dance Center <onboarding@resend.dev>",
-      to: ["jetedancetx@gmail.com"],
+    await resend.emails.send({
+      from: "Jeté Dance Center <hello@jetedancetx.com>",
+      to: ["jetedancetx@gmail.com"], // ← change if needed
       subject: "New Contact Form Submission",
       reply_to: email,
       text: `
@@ -54,13 +59,9 @@ ${message}
       `,
     });
 
-    return res.status(200).json({ success: true, data });
+    return res.status(200).json({ success: true });
   } catch (error) {
-    console.error("RESEND ERROR:", error);
-
-    return res.status(500).json({
-      error: error?.message || "Failed to send message.",
-      details: error?.name || null,
-    });
+    console.error(error);
+    return res.status(500).json({ error: "Failed to send message." });
   }
 }
