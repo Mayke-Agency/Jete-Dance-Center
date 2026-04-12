@@ -163,3 +163,32 @@ function showFormStatus(statusElement, message, type) {
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
+
+const form = document.querySelector(".contact-form");
+const submitBtn = form.querySelector("button");
+
+const requiredFields = form.querySelectorAll(
+  "input[required], textarea[required]",
+);
+
+function checkFormValidity() {
+  let allFilled = true;
+
+  requiredFields.forEach((field) => {
+    if (!field.value.trim()) {
+      allFilled = false;
+    }
+  });
+
+  if (allFilled) {
+    submitBtn.disabled = false;
+    submitBtn.classList.add("enabled");
+  } else {
+    submitBtn.disabled = true;
+    submitBtn.classList.remove("enabled");
+  }
+}
+
+requiredFields.forEach((field) => {
+  field.addEventListener("input", checkFormValidity);
+});

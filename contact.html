@@ -105,20 +105,17 @@
                 ></textarea>
               </div>
 
-              <div class="hp-field" aria-hidden="true">
-                <label for="website-url">Leave this field empty</label>
-                <input
-                  type="text"
-                  id="website-url"
-                  name="websiteUrl"
-                  tabindex="-1"
-                  autocomplete="nope"
-                />
-              </div>
+              <input
+                type="text"
+                name="websiteUrl"
+                class="hp-field"
+                tabindex="-1"
+                autocomplete="off"
+              />
 
               <input type="hidden" id="form-started" name="formStarted" />
 
-              <button class="button button-primary" type="submit">
+              <button class="button button-primary" type="submit" disabled>
                 Submit
               </button>
 
