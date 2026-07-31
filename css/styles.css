@@ -264,6 +264,18 @@ ul {
   transform-origin: left;
 }
 
+.header-location {
+  margin: 0;
+  color: var(--color-text-soft);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+  text-align: right;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
 .menu-toggle {
   display: none;
   width: 48px;
@@ -617,6 +629,19 @@ ul {
   box-shadow: 0 10px 30px rgba(47, 42, 44, 0.03);
 }
 
+.contact-location + .contact-location {
+  margin-top: 1.75rem;
+}
+
+.contact-location h2 {
+  margin-bottom: 0.4rem;
+  font-size: 1.65rem;
+}
+
+.contact-location p {
+  margin: 0;
+}
+
 .contact-image {
   margin-top: 1.5rem;
 }
@@ -807,6 +832,10 @@ ul {
 
 /* Mobile nav state */
 @media (max-width: 900px) {
+  .header-location {
+    display: none;
+  }
+
   .menu-toggle {
     display: inline-flex;
   }
